@@ -12,6 +12,7 @@ import LogOut from "./pages/logout";
 import DashBoard from "./pages/Home";
 import ViewSpecificFarmerDetails from "./Components/ViewSpecifFarmerDetails";
 import ParcelSoilData from "./Components/ParcelSoilData";
+import ProductCard from "./Components/ProductCard";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/AddSoilData/" component={AddSoilData} />
           <Route path="/LoginPage" component={LoginPage} />
           <Route path="/signup" component={SignupPage} />
+          <Route path="/productcard" component={ProductCard} />
           <Route path="/home" component={Home} />
           <Route path="/dashboard/:type" component={DashBoard} />
           <Route path="/logout" component={LogOut} />

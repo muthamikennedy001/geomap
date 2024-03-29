@@ -1,0 +1,44 @@
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Header styling */
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px; /* Adjust padding as needed */
+    display: flex;
+    justify-content: space-between; /* Horizontally space elements */
+    align-items: center; /* Align items vertically in center */
+  }
+  
+  /* Logo styling */
+  .logo {
+    font-size: 24px;
+  }
+  
+  /* Navigation styling */
+  .navigation-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .navigation-menu ul li {
+    margin-right: 20px;
+  }
+  
+  .navigation-menu ul li:last-child {
+    margin-right: 0; /* Remove margin from last element */
+  }
+  
+  .navigation-menu ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .navigation-menu ul li a:hover {
+    text-decoration: underline; /* Add underline on hover */
+  }
+  

@@ -17,6 +17,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const Order = require("../models/order");
 
 const blacklistedTokens = new Set();
 function blacklistToken(token) {
@@ -40,6 +41,14 @@ FarmParcel.hasOne(SoilData, {
 SoilData.belongsTo(FarmParcel, {
   foreignKey: "farmParcelId",
   as: "parcelData",
+});
+Farmer.hasMany(Order, {
+  foreignKey: "farmerIdNo",
+  as: "farmerOrders",
+});
+Order.belongsTo(Farmer, {
+  foreignKey: "farmerIdNO",
+  as: "ordersToFarmer",
 });
 
 async function createFarmer(username, idno, password, res) {
@@ -81,6 +90,29 @@ async function createDistributor(username, idno, password, res) {
     return res.json({ data: user.username });
   } catch (error) {
     console.error("Error creating user:", error);
+  }
+}
+async function createOrder(
+  farmerIdNo,
+  fertilizerName,
+  quantity,
+  price,
+  orderStatus,
+  res
+) {
+  try {
+    const order = await Order.create({
+      farmerIdNo: farmerIdNo,
+      fertilizerName: fertilizerName,
+      quantity: quantity,
+      price: price,
+      orderStatus: orderStatus,
+    });
+    console.log("Order created:", order.toJSON());
+    return res.json({ data: order });
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return res.status(500).json({ error: "Error creating order" });
   }
 }
 
@@ -453,5 +485,55 @@ router.get("/getAllFarmersMaps/:idNo", async (req, res) => {
     return res.status(500).send("Internal server error");
   }
 });
+
+router.post("/orders", async (req, res) => {
+  const { farmerIdNo, fertilizerName, quantity, price, orderStatus } = req.body;
+
+  try {
+    // Call the createOrder function to create the order
+    const result = await createOrder(
+      farmerIdNo,
+      fertilizerName,
+      quantity,
+      price,
+      orderStatus,
+      res
+    );
+    return result; // Return the response from createOrder
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return res.status(500).json({ error: "Error creating order" });
+  }
+});
+
+router.get("/orders/:farmerIdNo", async (req, res) => {
+  try {
+    const farmerIdNo = req.params.farmerIdNo;
+    console.log("farmerorders", farmerIdNo);
+
+    const orders = await Order.findAll({
+      where: { farmerIdNo: farmerIdNo },
+    });
+
+    if (orders.length === 0) {
+      // No orders found for the given farmerIdNo
+      console.log("No orders found for farmer ID:", farmerIdNo);
+      return res
+        .status(404)
+        .json({ message: "No orders found for the given farmer ID" });
+    }
+
+    // Log the farmer's orders
+    console.log("Farmer's Orders:", orders);
+
+    // Send the orders data as a response
+    return res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching farmer's orders:", error);
+    return res.status(500).send("Internal server error");
+  }
+});
+
+module.exports = router;
 
 module.exports = router;

@@ -16,6 +16,9 @@ const SoilData = sequelize.define("soilData", {
   Humidity: {
     type: DataTypes.DECIMAL,
   },
+  Moisture: {
+    type: DataTypes.DECIMAL,
+  },
   SoilType: {
     type: DataTypes.STRING,
   },
@@ -28,7 +31,7 @@ const SoilData = sequelize.define("soilData", {
   PotassiumLevel: {
     type: DataTypes.DECIMAL,
   },
-  phosphorusLevel: {
+  PhosphorusLevel: {
     type: DataTypes.DECIMAL,
   },
   createdAt: {
