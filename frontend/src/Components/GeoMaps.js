@@ -103,7 +103,7 @@ function GeoMaps({ apiKey, latitude, longitude, paths = [], point }) {
         region="us"
       >
         <GoogleMap
-          mapContainerClassName="App-map"
+          mapContainerClassName="App-Edit"
           center={{ lat: validLatitude, lng: validLongitude }} // Set center as an object with lat and lng keys
           zoom={20}
         >

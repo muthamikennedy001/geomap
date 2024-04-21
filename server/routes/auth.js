@@ -488,18 +488,27 @@ router.get("/getAllFarmersMaps/:idNo", async (req, res) => {
 
 router.post("/orders", async (req, res) => {
   const { farmerIdNo, fertilizerName, quantity, price, orderStatus } = req.body;
-
+  console.log(req.body);
   try {
-    // Call the createOrder function to create the order
-    const result = await createOrder(
+    console.log(" creating order");
+    // Create the order in the database
+    const createdOrder = await Order.create({
       farmerIdNo,
       fertilizerName,
       quantity,
       price,
       orderStatus,
-      res
-    );
-    return result; // Return the response from createOrder
+    });
+    console.log(" retriving  order");
+    console.log("createdOrder", createdOrder.dataValues.orderId);
+    // Query the database to retrieve the newly created order
+    const retrievedOrder = await Order.findOne({
+      where: { orderId: createdOrder.dataValues.orderId },
+    });
+    console.log("retrived order", retrievedOrder);
+
+    // Send the retrieved order data in the response
+    return res.status(201).json(retrievedOrder);
   } catch (error) {
     console.error("Error creating order:", error);
     return res.status(500).json({ error: "Error creating order" });

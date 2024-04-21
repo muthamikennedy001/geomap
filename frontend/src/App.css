@@ -21,6 +21,7 @@
   width: 500px;
 }
 .App-Edit {
+  overflow: scroll;
   height: 500px;
   width: full;
 }

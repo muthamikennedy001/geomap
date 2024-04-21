@@ -1,74 +1,14 @@
 import React, { useState } from "react";
-import ViewAllFarmersMaps from "./ViewAllFarmersMaps";
-import axios from "axios";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import AddGeoMap from "./AddGeoMap";
 
-export default function SoilDataNotAvailable({ farmParcelId, mapId }) {
-  const history = useHistory();
-  const [parcelID, setParcelID] = useState("");
-  const [temperature, setTemperature] = useState("");
-  const [humidity, setHumidity] = useState("");
-  const [moisture, setMoisture] = useState("");
-  const [soilType, setSoilType] = useState("");
-  const [pH, setPH] = useState("");
-  const [nitrogenLevel, setNitrogenLevel] = useState("");
-  const [potassiumLevel, setPotassiumLevel] = useState("");
-  const [phosphorusLevel, setPhosphorusLevel] = useState("");
-  let message = "";
+export default function AddFarmParcel() {
+  const { name } = useParams();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
-  const submitSoilData = (e) => {
-    setParcelID(farmParcelId);
-    e.preventDefault();
-
-    axios
-      .get(`http://localhost:2000/api/checkParcel/${parcelID}`)
-      .then((response) => {
-        if (response.data.exists) {
-          alert(
-            "Data for this parcel already exists. Please enter a different parcel ID."
-          );
-        } else {
-          // If data doesn't exist, proceed with inserting new data
-          axios
-            .post("http://localhost:2000/api/addSoilData", {
-              farmParcelId: parcelID,
-              temperature: temperature,
-              humidity: humidity,
-              moisture: moisture,
-              soilType: soilType,
-              pH: pH,
-              nitrogenLevel: nitrogenLevel,
-              potassiumLevel: potassiumLevel,
-              phosphorusLevel: phosphorusLevel,
-            })
-            .then((response) => {
-              if (response) {
-                message = response.data.msg; // Set message state to display success message
-                // Reset form fields
-                //setParcelID("");
-                setTemperature("");
-                setHumidity("");
-                setMoisture("");
-                setSoilType("");
-                setPH("");
-                setNitrogenLevel("");
-                setPotassiumLevel("");
-                setPhosphorusLevel("");
-                e.target.reset();
-                history.goBack();
-              }
-            })
-            .catch((err) => console.log(err));
-        }
-      })
-      .catch((error) => console.log(error));
-  };
-
   return (
     <>
       <div>
@@ -267,7 +207,7 @@ export default function SoilDataNotAvailable({ farmParcelId, mapId }) {
                             ></path>
                           </svg>
                           <span class="ml-3 flex-1 whitespace-nowrap">
-                            Farmers
+                            Users
                           </span>
                         </a>
                       </li>
@@ -436,7 +376,7 @@ export default function SoilDataNotAvailable({ farmParcelId, mapId }) {
                               ></path>
                             </svg>
                             <span class="ml-3 flex-1 whitespace-nowrap">
-                              Farmers
+                              Users
                             </span>
                           </a>
                         </li>
@@ -501,210 +441,180 @@ export default function SoilDataNotAvailable({ farmParcelId, mapId }) {
           >
             <main>
               <div class="pt-6 px-4">
-                <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+                {/* <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
                   <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8  2xl:col-span-2">
                     <div class="flex items-center justify-between mb-4">
                       <div class="flex-shrink-0">
                         <span class="text-2xl sm:text-3xl leading-none font-bold text-gray-900">
-                          Mapped Farm
+                          $45,385
                         </span>
-                        {/* <h3 class="text-base font-normal text-gray-500">
+                        <h3 class="text-base font-normal text-gray-500">
                           Sales this week
-                        </h3> */}
+                        </h3>
+                      </div>
+                      <div class="flex items-center justify-end flex-1 text-green-500 text-base font-bold">
+                        12.5%
+                        <svg
+                          class="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"
+                          ></path>
+                        </svg>
                       </div>
                     </div>
-                    <div id="main-chart">
-                      <ViewAllFarmersMaps mapId={mapId} />
-                    </div>
+                    <div id="main-chart"></div>
                   </div>
                   <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
-                    <div className="flex flex-col mt-8">
-                      <div className="overflow-x-auto rounded-lg ">
-                        <div className="align-middle inline-block min-w-full  ">
-                          <div className="shadow overflow-hidden sm:rounded-lg">
-                            <div class="flex w-full justify-center py-10 items-center bg-white">
-                              <form class="bg-white" onSubmit={submitSoilData}>
-                                <h1 class="text-gray-800 font-bold text-2xl mb-1">
-                                  Add Farm Parcel {farmParcelId}
-                                </h1>
-                                <p class="mb-7"></p>
-                                <div class="flex flex-wrap">
-                                  {/* <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Parcel ID
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                                      type="text"
-                                      placeholder="Parcel ID"
-                                      id="parcelID"
-                                      onChange={(e) =>
-                                        setParcelID(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div> */}
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Temperature
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="Temperature (°C)"
-                                      id="temperature"
-                                      min="-100"
-                                      max="100"
-                                      onChange={(e) =>
-                                        setTemperature(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Humidity
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="Humidity (%)"
-                                      id="humdity"
-                                      min="0"
-                                      max="100"
-                                      onChange={(e) =>
-                                        setHumidity(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Moisture
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="Moisture (%)"
-                                      id="moisture"
-                                      min="0"
-                                      max="100"
-                                      onChange={(e) =>
-                                        setMoisture(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Soil Type
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="text"
-                                      placeholder="Soil Type"
-                                      id="soilType"
-                                      onChange={(e) =>
-                                        setSoilType(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      pH
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="pH Level"
-                                      step="0.1"
-                                      id="pH"
-                                      min="0.0"
-                                      max="14.0"
-                                      onChange={(e) => setPH(e.target.value)}
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Nitrogen Level
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="Nitrogen Level (%)"
-                                      id="nitrogenLevel"
-                                      min="0.0"
-                                      max="1000.0"
-                                      step="0.1"
-                                      onChange={(e) =>
-                                        setNitrogenLevel(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Potassium Level
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="Potassium Level (%)"
-                                      id="potassiumLevel"
-                                      min="0.0"
-                                      max="1000.0"
-                                      step="0.1"
-                                      onChange={(e) =>
-                                        setPotassiumLevel(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                  <div class="w-full md:w-1/2 px-3">
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                      Phosphorus Level
-                                    </label>
-                                    <input
-                                      class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      type="number"
-                                      placeholder="Phosphorus Level (%)"
-                                      id="phosphorusLevel"
-                                      min="0.0"
-                                      max="1000.0"
-                                      step="0.1"
-                                      onChange={(e) =>
-                                        setPhosphorusLevel(e.target.value)
-                                      }
-                                      required
-                                    />
-                                  </div>
-                                </div>
-                                <button
-                                  type="submit"
-                                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 "
-                                  disabled={
-                                    temperature === "" ||
-                                    humidity === "" ||
-                                    moisture === "" ||
-                                    soilType === "" ||
-                                    pH === "" ||
-                                    nitrogenLevel === "" ||
-                                    potassiumLevel === "" ||
-                                    phosphorusLevel === ""
-                                  }
-                                >
-                                  Save Soil Data
-                                </button>
-                              </form>
-                            </div>
+                    <div class="mb-4 flex items-center justify-between">
+                      <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                          Latest Transactions
+                        </h3>
+                        <span class="text-base font-normal text-gray-500">
+                          This is a list of latest transactions
+                        </span>
+                      </div>
+                      <div class="flex-shrink-0">
+                        <a
+                          href="#"
+                          class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg p-2"
+                        >
+                          View all
+                        </a>
+                      </div>
+                    </div>
+                    <div class="flex flex-col mt-8">
+                      <div class="overflow-x-auto rounded-lg">
+                        <div class="align-middle inline-block min-w-full">
+                          <div class="shadow overflow-hidden sm:rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                              <thead class="bg-gray-50">
+                                <tr>
+                                  <th
+                                    scope="col"
+                                    class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                  >
+                                    Transaction
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                  >
+                                    Date & Time
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                  >
+                                    Amount
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody class="bg-white">
+                                <tr>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
+                                    Payment from{" "}
+                                    <span class="font-semibold">
+                                      Bonnie Green
+                                    </span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 23 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    $2300
+                                  </td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 rounded-lg rounded-left">
+                                    Payment refund to{" "}
+                                    <span class="font-semibold">#00910</span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 23 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    -$670
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
+                                    Payment failed from{" "}
+                                    <span class="font-semibold">#087651</span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 18 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    $234
+                                  </td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 rounded-lg rounded-left">
+                                    Payment from{" "}
+                                    <span class="font-semibold">Lana Byrd</span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 15 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    $5000
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
+                                    Payment from{" "}
+                                    <span class="font-semibold">Jese Leos</span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 15 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    $2300
+                                  </td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 rounded-lg rounded-left">
+                                    Payment from{" "}
+                                    <span class="font-semibold">
+                                      THEMESBERG LLC
+                                    </span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 11 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    $560
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
+                                    Payment from{" "}
+                                    <span class="font-semibold">
+                                      Lana Lysle
+                                    </span>
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
+                                    Apr 6 ,2021
+                                  </td>
+                                  <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    $1437
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* <div class="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                     <div class="flex items-center">
@@ -788,8 +698,8 @@ export default function SoilDataNotAvailable({ farmParcelId, mapId }) {
                     </div>
                   </div>
                 </div> */}
-                <div class="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
-                  {/* <FarmerListing idno={idno} /> */}
+                <div class="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4 mt-6">
+                  <AddGeoMap name={name} />
                   {/* <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                     <h3 class="text-xl leading-none font-bold text-gray-900 mb-10">
                       Acquisition Overview

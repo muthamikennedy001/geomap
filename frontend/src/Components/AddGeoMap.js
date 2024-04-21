@@ -4,9 +4,8 @@ import { useHistory, useParams } from "react-router-dom";
 import GeoMaps from "./GeoMaps";
 import { Alert } from "react-bootstrap";
 
-function AddGeoMap() {
+function AddGeoMap({ name }) {
   let btnRef = { useRef };
-  let { name } = useParams();
   const history = useHistory();
 
   const [latitude, setLatitude] = useState();
@@ -74,7 +73,7 @@ function AddGeoMap() {
     }
   };
   return (
-    <div>
+    <div className="mt-4">
       <GeoMaps
         apiKey={process.env.REACT_APP_GOOGLEAPI}
         latitude={latitude} // Pass latitude as a prop
@@ -84,13 +83,22 @@ function AddGeoMap() {
       />
       {paths && paths.length > 1 ? (
         <>
-          <button ref={btnRef} onClick={saveMap}>
+          <button
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            ref={btnRef}
+            onClick={saveMap}
+          >
             Save Map
           </button>
         </>
       ) : null}
 
-      <button onClick={() => history.push("/")}>Go Back</button>
+      <button
+        class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+        onClick={() => history.goBack()}
+      >
+        Go Back
+      </button>
     </div>
   );
 }

@@ -194,7 +194,7 @@ function FertilizerForm({ farmParcelId, farmerIdNo }) {
         <ProductCard recommendation={recommendation} farmerIdNo={farmerIdNo} />
       )}
       {/* Cart */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <h2 className="text-xl font-semibold">Order Fertilizer</h2>
         <div>
           <h3 className="text-lg font-semibold">Cart</h3>
@@ -206,7 +206,7 @@ function FertilizerForm({ farmParcelId, farmerIdNo }) {
             ))}
           </ul>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -49,14 +49,28 @@ function ProductCard({ recommendation, farmerIdNo }) {
         "http://localhost:2000/api/orders",
         orderData
       );
-      setIsSuccess(true); // Set success status to true
-      setIsVisible(false); // Hide the product card
-      // Refresh the page after 2 seconds
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-      console.log("Order created:", response.data);
-      // Optionally, you can handle success here
+
+      // Check if the POST request was successful
+      if (response.status === 201) {
+        console.log(response.data);
+
+        // Set success status to true
+        setIsSuccess(true);
+
+        // Hide the product card
+        setIsVisible(false);
+
+        // Refresh the page after 2 seconds
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 2000);
+
+        console.log("Order created:");
+
+        // Optionally, you can handle success here
+      } else {
+        // Handle other status codes (if necessary)
+      }
     } catch (error) {
       console.error("Error creating order:", error.response.data.error);
       // Optionally, you can handle errors here

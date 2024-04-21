@@ -13,15 +13,16 @@ import DashBoard from "./pages/Home";
 import ViewSpecificFarmerDetails from "./Components/ViewSpecifFarmerDetails";
 import ParcelSoilData from "./Components/ParcelSoilData";
 import ProductCard from "./Components/ProductCard";
+import AddFarmParcel from "./Components/AddFarmParcel";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        {/* <Header /> */}
+        {/* <Header />  */}
         <Switch>
           <Route exact path="/" component={LoginPage} />
-          <Route path="/map/:name" component={AddGeoMap} />
+          <Route path="/map/:name" component={AddFarmParcel} />
           <Route path="/viewAllMaps" component={ViewAllMaps} />
           <Route path="/AddSoilData/" component={AddSoilData} />
           <Route path="/LoginPage" component={LoginPage} />
