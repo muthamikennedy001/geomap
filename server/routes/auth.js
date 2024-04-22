@@ -542,6 +542,41 @@ router.get("/orders/:farmerIdNo", async (req, res) => {
     return res.status(500).send("Internal server error");
   }
 });
+router.put("/orders/updateStatus", async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+    const newOwner = req.body.newOwner;
+    console.log("order id to be updated", orderId);
+
+    // Update the order status
+    const updatedOrder = await Order.update(
+      { currentOwner: newOwner },
+      { where: { orderId: orderId } }
+    );
+
+    console.log("Updated order result:", updatedOrder); // Log the result
+
+    // if (updatedOrder[0] === 0) {
+    //   // No order found for the given orderId
+    //   console.log("No order found for order ID:", orderId);
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No order found for the given order ID" });
+    // }
+
+    // // Log the updated order details
+    // console.log("Updated Order Details:", updatedOrder);
+
+    // Send the updated order data as a response
+    return res.status(200).json({ message: "Order status updated successfully" });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return res.status(500).send("Internal server error");
+  }
+});
+
+
+
 
 module.exports = router;
 

@@ -76,7 +76,7 @@ export default function OfficerDash() {
                     alt="Windster Logo"
                   />
                   <span class="self-center whitespace-nowrap">
-                    {localStorage.getItem("username")}
+                    {/* {localStorage.getItem("username")} */}
                   </span>
                 </a>
               </div>

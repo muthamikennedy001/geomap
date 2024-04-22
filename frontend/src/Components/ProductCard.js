@@ -43,31 +43,45 @@ function ProductCard({ recommendation, farmerIdNo }) {
       price: price,
       orderStatus: "Pending",
     };
-
+  
     try {
       const response = await axios.post(
         "http://localhost:2000/api/orders",
         orderData
       );
-
+  
       // Check if the POST request was successful
       if (response.status === 201) {
         console.log(response.data);
-
+  
         // Set success status to true
         setIsSuccess(true);
-
+  
         // Hide the product card
         setIsVisible(false);
-
-        // Refresh the page after 2 seconds
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 2000);
-
+  
         console.log("Order created:");
-
-        // Optionally, you can handle success here
+        console.log("response id", response.data.orderId)
+  
+        // Call blockchain API
+        await axios.post(
+          "http://localhost:8080/api/createorder",
+          {
+            farmerId: response.data.farmerIdNo,
+            orderId: response.data.orderId.toString(),
+            fertilizerRequested: response.data.fertilizerName,
+          }
+        ).then(() => {
+          console.log("Blockchain API request successful");
+          // Reload the page after the blockchain API request is successful
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }).catch(error => {
+          console.error("Error calling blockchain API:", error.response.data.error);
+          // Optionally, you can handle errors here
+        });
+  
       } else {
         // Handle other status codes (if necessary)
       }
@@ -76,6 +90,7 @@ function ProductCard({ recommendation, farmerIdNo }) {
       // Optionally, you can handle errors here
     }
   };
+  
 
   return (
     <>

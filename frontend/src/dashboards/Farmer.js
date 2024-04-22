@@ -17,6 +17,40 @@ export default function FarmerDash() {
   const formRef = useRef(null);
   const apiUrl = "http://127.0.0.1:2000/api";
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fertilizerId, setFertilizerId] = useState("");
+  const [userId, setUserId] = useState("");
+
+  const handleAcceptOrder = (orderId) => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setFertilizerId("");
+    setUserId("");
+  };
+
+  const handleSubmit = async () => {
+    try {
+      // Make POST request to accept transfer
+      const response = await axios.post(
+        "http://localhost:8080/api/acceptTransfer",
+        {
+          fertilizerId: fertilizerId,
+          newOwner: userId,
+        }
+      );
+      console.log("Accept Transfer Response:", response.data);
+      
+      // Close the modal after successful submission
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error accepting transfer:", error);
+    }
+  };
+
+
   const handleRecommendationsClick = () => {
     setShowForm(true);
     if (formRef.current) {
@@ -173,7 +207,7 @@ export default function FarmerDash() {
                     alt="Windster Logo"
                   />
                   <span class="self-center whitespace-nowrap">
-                    {localStorage.getItem("username")}
+                    {/* {localStorage.getItem("username")} */}
                   </span>
                 </a>
               </div>
@@ -678,101 +712,100 @@ export default function FarmerDash() {
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
-                  <div class="bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full">
-                    <div class="flex items-center justify-between mb-4">
-                      <h3 class="text-xl font-bold leading-none text-gray-900">
-                        My Orders
-                      </h3>
-                      <a
-                        href="#"
-                        class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg inline-flex items-center p-2"
-                      >
-                        View all
-                      </a>
+                <div className="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
+      <div className="bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold leading-none text-gray-900">
+            My Orders
+          </h3>
+          <a
+            href="#"
+            className="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg inline-flex items-center p-2"
+          >
+            View all
+          </a>
+        </div>
+        <div className="flow-root">
+          {/* Heading */}
+          <div className="overflow-x-auto">
+            <ul role="list" className="divide-y divide-gray-200">
+              <li className="py-3 sm:py-4">
+                <div className="flex items-center justify-between space-x-4">
+                  {/* Titles */}
+                  <div className="sm:w-1/5">
+                    <p className="text-base font-semibold text-gray-900">
+                      Fertilizer Image
+                    </p>
+                  </div>
+                  <div className="sm:w-1/5">
+                    <p className="text-base font-semibold text-gray-900">
+                      Name
+                    </p>
+                  </div>
+                  <div className="sm:w-1/5">
+                    <p className="text-base font-semibold text-gray-900">
+                      Quantity
+                    </p>
+                  </div>
+                  <div className="sm:w-1/5">
+                    <p className="text-base font-semibold text-gray-900">
+                      Price
+                    </p>
+                  </div>
+                  <div className="sm:w-1/5">
+                    <p className="text-base font-semibold text-gray-900">
+                      Actions
+                    </p>
+                  </div>
+                </div>
+              </li>
+              {/* Orders */}
+              {orders.map((order) => (
+                <li key={order.orderId} className="py-3 sm:py-4">
+                  <div className="flex items-center space-x-4">
+                    {/* Fertilizer Image */}
+                    <div className="sm:w-1/5">
+                      <img
+                        className="h-16 w-16"
+                        src={getImageSource(order.fertilizerName)}
+                        alt={order.fertilizerName}
+                      />
                     </div>
-                    <div className="flow-root ">
-                      {/* Heading */}
-                      <div className="overflow-x-auto">
-                        <ul role="list" className="divide-y divide-gray-200">
-                          <li className="py-3 sm:py-4">
-                            <div className="flex items-center justify-between space-x-4">
-                              {/* Title: Fertilizer Image */}
-                              <div className="sm:w-1/5">
-                                <p className="text-base font-semibold text-gray-900">
-                                  Fertilizer Image
-                                </p>
-                              </div>
-                              {/* Title: Name */}
-                              <div className="sm:w-1/5">
-                                <p className="text-base font-semibold text-gray-900">
-                                  Name
-                                </p>
-                              </div>
-                              {/* Title: Quantity */}
-                              <div className="sm:w-1/5">
-                                <p className="text-base font-semibold text-gray-900">
-                                  Quantity
-                                </p>
-                              </div>
-                              {/* Title: Price */}
-                              <div className="sm:w-1/5">
-                                <p className="text-base font-semibold text-gray-900">
-                                  Price
-                                </p>
-                              </div>
-                              {/* Title: Status */}
-                              <div className="sm:w-1/5">
-                                <p className="text-base font-semibold text-gray-900">
-                                  Status
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          {orders.map((order) => (
-                            <li key={order.orderId} className="py-3 sm:py-4">
-                              <div className="flex items-center space-x-4">
-                                {/* Fertilizer Image */}
-                                <div className="sm:w-1/5 ">
-                                  <img
-                                    className="h-16 w-16" // Adjust the size as needed
-                                    src={getImageSource(order.fertilizerName)} // Dynamically set the image source
-                                    alt={order.fertilizerName}
-                                  />
-                                </div>
-                                {/* Name */}
-                                <div className="sm:w-1/5">
-                                  <p className="text-sm font-medium text-gray-900 truncate">
-                                    {order.fertilizerName}
-                                  </p>
-                                </div>
-                                {/* Quantity */}
-                                <div className="sm:w-1/5">
-                                  <p className="text-base font-semibold text-gray-900">
-                                    {order.quantity} - 50 kg bags
-                                  </p>
-                                </div>
-                                {/* Price */}
-                                <div className="sm:w-1/5">
-                                  <p className="text-base font-semibold text-gray-900">
-                                    {order.price}
-                                  </p>
-                                </div>
-                                {/* Status */}
-                                <div className="sm:w-1/5">
-                                  <p className="text-base font-semibold text-gray-900">
-                                    {order.orderStatus}
-                                  </p>
-                                </div>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                    {/* Name */}
+                    <div className="sm:w-1/5">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {order.fertilizerName}
+                      </p>
+                    </div>
+                    {/* Quantity */}
+                    <div className="sm:w-1/5">
+                      <p className="text-base font-semibold text-gray-900">
+                        {order.quantity} - 50 kg bags
+                      </p>
+                    </div>
+                    {/* Price */}
+                    <div className="sm:w-1/5">
+                      <p className="text-base font-semibold text-gray-900">
+                        {order.price}
+                      </p>
+                    </div>
+                    {/* Accept Order Button */}
+                    <div className="sm:w-1/5">
+                      <button
+                        onClick={() => handleAcceptOrder(order.orderId)}
+                        className="text-sm font-medium text-white bg-green-500 hover:bg-green-600 rounded-lg px-4 py-2"
+                      >
+                        Accept Order
+                      </button>
                     </div>
                   </div>
-
-                  {showForm && (
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {showForm && (
                     <div
                       ref={formRef}
                       class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 "
@@ -785,8 +818,55 @@ export default function FarmerDash() {
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
+
+      {/* Conditional rendering of the form */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="bg-white rounded-lg w-1/3 p-6 relative z-10">
+            <h2 className="text-lg font-semibold mb-4">Accept Order</h2>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Fertilizer ID
+              </label>
+              <input
+                type="text"
+                value={fertilizerId}
+                onChange={(e) => setFertilizerId(e.target.value)}
+                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Enter Fertilizer ID"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                User ID
+              </label>
+              <input
+                type="text"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Enter User ID"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={handleSubmit}
+                className="mt-3 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCloseModal}
+                className="mt-3 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div> </div>
             </main>
             <footer class="bg-white md:flex md:items-center md:justify-between shadow rounded-lg p-4 md:p-6 xl:p-8 my-6 mx-4">
               <ul class="flex items-center flex-wrap mb-6 md:mb-0">

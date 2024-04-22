@@ -26,6 +26,10 @@ const Order = sequelize.define("Order", {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  currentOwner:{
+    type:DataTypes.STRING,
+    defaultValue:null,
+  }
 });
 
 module.exports = Order;
